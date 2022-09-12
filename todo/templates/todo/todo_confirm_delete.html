@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+
+{% block title %}Delete To-Do List{% endblock %}
+
+{% block content %}
+    <h1>Are you sure you want to delete {{ todo }}?</h1>
+    <form method="POST">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit" value="Cancel" onclick="window.location='{% url 'todo:todo-list' %}'; return false;">
+        <input type="submit" value="Delete">
+    </form>
+{% endblock %}
