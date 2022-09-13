@@ -6,7 +6,7 @@
     <form method="POST">
         {% csrf_token %}
         {{ form.as_p }}
-        <input type="submit" value="Cancel" onclick="window.location='{% url 'todo:todo-list' %}'; return false;">
-        <input type="submit" value="Create">
+        <input type="submit" value="Cancel" onclick="window.location='{% url 'todo:todo-detail' todo.id %}'; return false;">
+        <input type="submit" value="Save">
     </form>
 {% endblock %}

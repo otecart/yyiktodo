@@ -3,14 +3,26 @@
 {% block title %}{{ todo }}{% endblock %}
 
 {% block content %}
-    <h1>{{ todo }}</h1>
+    <h1>
+        {{ todo }}
+        (<a href="{% url 'todo:todo-edit' todo.id %}">Edit</a>
+        |
+        <a href="{% url 'todo:todo-delete' todo.id %}">Delete</a>)
+    </h1>
     {% for entry in todo.entries.all %}
-        <p>{{ entry }}</p>
+        <p>
+            {% if entry.completed %}<strike>{{ entry }}</strike>{% else %}{{ entry }}{% endif %}
+            (<a href="{% url 'todo:entry-edit' entry.id %}">Edit</a>
+            |
+            <a href="{% url 'todo:entry-delete' entry.id %}">Delete</a>)
+        </p>
     {% endfor %}
     <p>
-        <a href="{% url 'todo:todo-edit' todo.id %}">Edit</a>
-        |
-        <a href="{% url 'todo:todo-delete' todo.id %}">Delete</a>
+        <form method="POST" action="{% url 'todo:entry-create' todo.id %}">
+            {% csrf_token %}
+            {{ form.as_table }}
+            <input type="submit" value="Add">
+        </form>
     </p>
     <p><a href="{% url 'todo:todo-list' %}">Back</a></p>
 {% endblock %}

@@ -3,11 +3,11 @@
 {% block title %}Delete To-Do List{% endblock %}
 
 {% block content %}
-    <h3>Delete {{ todo }}?</h3>
+    <h3>Delete {{ entry }}?</h3>
     <form method="POST">
         {% csrf_token %}
         {{ form.as_p }}
-        <input type="submit" value="Cancel" onclick="window.location='{% url 'todo:todo-detail' todo.id %}'; return false;">
+        <input type="submit" value="Cancel" onclick="window.location='{% url 'todo:todo-detail' entry.todo.id %}'; return false;">
         <input type="submit" value="Delete">
     </form>
 {% endblock %}

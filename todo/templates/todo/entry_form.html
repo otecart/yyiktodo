@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ entry }}{% endblock %}
+
+{% block content %}
+    <form method="POST">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit" value="Cancel" onclick="window.location='{% url 'todo:todo-detail' entry.todo.id %}'; return false;">
+        <input type="submit" value="Save">
+    </form>
+{% endblock %}
