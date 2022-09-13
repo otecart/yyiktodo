@@ -17,7 +17,7 @@ class ToDo(models.Model):
 
 
 class ToDoEntry(models.Model):
-    list = models.ForeignKey(ToDo, on_delete=models.CASCADE, related_name="entries")
+    todo = models.ForeignKey(ToDo, on_delete=models.CASCADE, related_name="entries")
     text = models.CharField(max_length=200)
     completed = models.BooleanField(default=False)
 
