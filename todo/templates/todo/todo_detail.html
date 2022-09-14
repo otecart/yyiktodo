@@ -20,7 +20,7 @@
     <p>
         <form method="POST" action="{% url 'todo:entry-create' todo.id %}">
             {% csrf_token %}
-            {{ form.as_table }}
+            {{ entry_form.as_table }}
             <input type="submit" value="Add">
         </form>
     </p>

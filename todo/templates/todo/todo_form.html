@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load todo_tags %}
 
 {% block title %}{% if todo %}{{ todo }}{% else %}Create To-Do List{% endif %}{% endblock %}
 
@@ -6,7 +7,7 @@
     <form method="POST">
         {% csrf_token %}
         {{ form.as_p }}
-        <input type="submit" value="Cancel" onclick="window.location='{% url 'todo:todo-detail' todo.id %}'; return false;">
+        <input type="submit" value="Cancel" onclick="window.location='{% get_back_url todo %}'; return false;">
         <input type="submit" value="Save">
     </form>
 {% endblock %}

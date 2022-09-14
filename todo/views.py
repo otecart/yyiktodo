@@ -9,19 +9,18 @@ from django.views.generic import (
     View,
 )
 
-from todo.forms import EntryForm
-
-from .mixins import AddOwnerMixin
+from .forms import EntryForm
+from .mixins import AddOwnerMixin, OwnedOnlyDetailMixin, OwnedOnlyListMixin
 from .models import ToDo, ToDoEntry
 
 
-class ToDoListView(ListView):
+class ToDoListView(OwnedOnlyListMixin, ListView):
     model = ToDo
 
 
-class ToDoDetailView(DetailView):
+class ToDoDetailView(OwnedOnlyDetailMixin, DetailView):
     model = ToDo
-    extra_context = {"form": EntryForm()}
+    extra_context = {"entry_form": EntryForm()}
 
 
 class ToDoCreateView(AddOwnerMixin, CreateView):
@@ -30,7 +29,7 @@ class ToDoCreateView(AddOwnerMixin, CreateView):
     success_url = reverse_lazy("todo:todo-list")
 
 
-class ToDoEditView(UpdateView):
+class ToDoEditView(OwnedOnlyDetailMixin, UpdateView):
     model = ToDo
     fields = ["title"]
 
@@ -38,7 +37,7 @@ class ToDoEditView(UpdateView):
         return reverse("todo:todo-detail", args=(self.object.pk,))
 
 
-class ToDoDeleteView(DeleteView):
+class ToDoDeleteView(OwnedOnlyDetailMixin, DeleteView):
     model = ToDo
     success_url = reverse_lazy("todo:todo-list")
 
