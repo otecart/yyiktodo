@@ -1,9 +1,11 @@
 {% extends 'base.html' %}
+{% load todo_tags %}
 
 {% block title %}To-Do Lists{% endblock %}
 
 {% block content %}
     <h1>To-Do Lists</h1>
+    <p>{% toggle_list request.path %}</p>
     <ul>
     {% for todo in todo_list %}
         <li><a href="{% url 'todo:todo-detail' todo.id %}">{{ todo }}</a></li>

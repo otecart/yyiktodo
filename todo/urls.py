@@ -4,6 +4,7 @@ from .views import (
     EntryCreateView,
     EntryDeleteView,
     EntryEditView,
+    MyToDoListView,
     ToDoCreateView,
     ToDoDeleteView,
     ToDoDetailView,
@@ -15,6 +16,7 @@ app_name = "todo"
 
 urlpatterns = [
     path("", ToDoListView.as_view(), name="todo-list"),
+    path("my/", MyToDoListView.as_view(), name="todo-list-my"),
     path("create/", ToDoCreateView.as_view(), name="todo-create"),
     path("<int:pk>/", ToDoDetailView.as_view(), name="todo-detail"),
     path("<int:pk>/edit/", ToDoEditView.as_view(), name="todo-edit"),
