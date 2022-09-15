@@ -5,24 +5,30 @@
 {% block content %}
     <h1>
         {{ todo }}
-        (<a href="{% url 'todo:todo-edit' todo.id %}">Edit</a>
-        |
-        <a href="{% url 'todo:todo-delete' todo.id %}">Delete</a>)
+        {% if user == todo.owner %}
+            (<a href="{% url 'todo:todo-edit' todo.id %}">Edit</a>
+            |
+            <a href="{% url 'todo:todo-delete' todo.id %}">Delete</a>)
+        {% endif %}
     </h1>
     {% for entry in todo.entries.all %}
         <p>
             {% if entry.completed %}<strike>{{ entry }}</strike>{% else %}{{ entry }}{% endif %}
-            (<a href="{% url 'todo:entry-edit' entry.id %}">Edit</a>
-            |
-            <a href="{% url 'todo:entry-delete' entry.id %}">Delete</a>)
+            {% if user == todo.owner %}
+                (<a href="{% url 'todo:entry-edit' entry.id %}">Edit</a>
+                |
+                <a href="{% url 'todo:entry-delete' entry.id %}">Delete</a>)
+            {% endif %}
         </p>
     {% endfor %}
-    <p>
-        <form method="POST" action="{% url 'todo:entry-create' todo.id %}">
-            {% csrf_token %}
-            {{ entry_form.as_table }}
-            <input type="submit" value="Add">
-        </form>
-    </p>
+    {% if user == todo.owner %}
+        <p>
+            <form method="POST" action="{% url 'todo:entry-create' todo.id %}">
+                {% csrf_token %}
+                {{ entry_form.as_table }}
+                <input type="submit" value="Add">
+            </form>
+        </p>
+    {% endif %}
     <p><a href="{% url 'todo:todo-list' %}">Back</a></p>
 {% endblock %}
