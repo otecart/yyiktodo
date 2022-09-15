@@ -7,6 +7,7 @@ User = get_user_model()
 class ToDo(models.Model):
     title = models.CharField(max_length=200, default="To-Do List")
     owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name="todo_lists")
+    public = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)
 
