@@ -1,3 +1,4 @@
+from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Q
 from django.shortcuts import get_object_or_404, redirect
@@ -15,6 +16,8 @@ from .forms import EntryForm
 from .mixins import AddOwnerMixin, OrFilteredMultipleMixin, OrFilteredSingleMixin
 from .models import ToDo, ToDoEntry
 
+User = get_user_model()
+
 
 class ToDoListView(OrFilteredMultipleMixin, ListView):
     model = ToDo
@@ -25,12 +28,38 @@ class ToDoListView(OrFilteredMultipleMixin, ListView):
             filters.append(Q(owner=self.request.user))
         return filters
 
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        return queryset.select_related("owner")
+
 
 class MyToDoListView(LoginRequiredMixin, OrFilteredMultipleMixin, ListView):
     model = ToDo
 
     def get_filters(self):
         return [Q(owner=self.request.user)]
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        return queryset.select_related("owner")
+
+
+class UserProfileView(DetailView):
+    model = User
+    fields = ["username"]
+    template_name = "todo/profile.html"
+    context_object_name = "profile"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["todo_list"] = ToDo.objects.filter(owner=self.object).filter(  # type: ignore
+            public=True
+        )
+        return context
+
+    def get_object(self, queryset=None):
+        queryset = queryset or self.get_queryset()
+        return get_object_or_404(queryset, username=self.kwargs["username"])
 
 
 class ToDoDetailView(OrFilteredSingleMixin, DetailView):
@@ -42,6 +71,9 @@ class ToDoDetailView(OrFilteredSingleMixin, DetailView):
         if self.request.user.is_authenticated:
             filters.append(Q(owner=self.request.user))
         return filters
+
+    def get_queryset(self):
+        return super().get_queryset().select_related("owner")
 
 
 class ToDoCreateView(AddOwnerMixin, CreateView):
