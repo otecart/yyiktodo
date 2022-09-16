@@ -4,11 +4,18 @@
 {% block title %}To-Do Lists{% endblock %}
 
 {% block content %}
-    <h1>To-Do Lists</h1>
+    <h2>To-Do Lists</h2>
     <p>{% toggle_list request.path %}</p>
     <ul>
     {% for todo in todo_list %}
-        <li><a href="{% url 'todo:todo-detail' todo.id %}">{{ todo }}</a></li>
+        <li>
+            {% if user == todo.owner %}
+                [<strong>me</strong>]
+            {% else %}
+                [<a href="{% url 'todo:profile' todo.owner.username %}">{{ todo.owner }}</a>]
+            {% endif %}
+            <a href="{% url 'todo:todo-detail' todo.id %}">{{ todo }}</a>
+        </li>
     {% endfor %}
     </ul>
     <p><a href="{% url 'todo:todo-create' %}">Add To-Do List</a></p>
