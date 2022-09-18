@@ -25,3 +25,26 @@ def toggle_list(path: str) -> str:
     if path == my_list_url:
         return format_html('<a href="{}">Show public lists</a>', public_list_url)
     raise ValueError(f"Argument must be either public or user own list url")
+
+
+@register.simple_tag
+def row(classes=""):
+    if not classes:
+        return format_html('<div class="row">')
+    return format_html('<div class="{}">', classes)
+
+
+@register.simple_tag
+def endrow():
+    return format_html("</div>")
+
+@register.simple_tag
+def col(classes=""):
+    if not classes:
+        return format_html('<div class="col">')
+    return format_html('<div class="{}">', classes)
+
+
+@register.simple_tag
+def endcol():
+    return format_html("</div>")
