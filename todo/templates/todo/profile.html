@@ -4,10 +4,13 @@
 
 {% block content %}
     <h3>{{ profile }}'s public to-do lists:</h3>
-    <ul>
+    <ul class="list-group bg-dark">
         {% for todo in todo_list %}
-            <li><a href="{% url 'todo:todo-detail' todo.id %}">{{ todo }}</a></li>
+            <li class="list-group-item">
+                <a href="{% url 'todo:todo-detail' todo.id %}">{{ todo }}</a>
+            </li>
         {% endfor %}
     </ul>
-    <p><a href="{% url 'todo:todo-list' %}">Back to main page</a></p>
+    <br>
+    <a href="{% url 'todo:todo-list' %}">Back to main page</a>
 {% endblock %}

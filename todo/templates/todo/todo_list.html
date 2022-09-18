@@ -6,9 +6,9 @@
 {% block content %}
     <h2>To-Do Lists</h2>
     <p>{% toggle_list request.path %}</p>
-    <ul>
+    <ul class="list-group bg-dark">
     {% for todo in todo_list %}
-        <li>
+        <li class="list-group-item">
             {% if user == todo.owner %}
                 [<strong>me</strong>]
             {% else %}
@@ -18,5 +18,6 @@
         </li>
     {% endfor %}
     </ul>
-    <p><a href="{% url 'todo:todo-create' %}">Add To-Do List</a></p>
+    <br>
+    <button class="btn btn-outline-yellow" onclick="window.location='{% url 'todo:todo-create' %}'"><i class="bi bi-journal-plus"></i> Add To-Do List</button>
 {% endblock %}

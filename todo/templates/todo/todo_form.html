@@ -1,13 +1,18 @@
 {% extends 'base.html' %}
 {% load todo_tags %}
+{% load crispy_forms_tags %}
 
 {% block title %}{% if todo %}{{ todo }}{% else %}Create To-Do List{% endif %}{% endblock %}
 
 {% block content %}
     <form method="POST">
         {% csrf_token %}
-        {{ form.as_p }}
-        <input type="submit" value="Cancel" onclick="window.location='{% get_back_url todo %}'; return false;">
-        <input type="submit" value="Save">
+        {{ form|crispy }}
+        <button type="submit" class="btn btn-outline-yellow">
+            <i class="bi bi-journal-check"></i> Save
+        </button>
+        <button type="submit" class="btn btn-outline-yellow" onclick="window.location='{% get_back_url todo %}'; return false;">
+            <i class="bi bi-journals"></i> Back
+        </button>
     </form>
 {% endblock %}

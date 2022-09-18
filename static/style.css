@@ -1,0 +1,24 @@
+.btn.btn-outline-yellow {
+    color: yellow;
+    border-color: yellow;
+}
+.btn.btn-outline-yellow:hover {
+    color: white;
+    border-color: white;
+}
+
+a {
+    color: yellow;
+}
+a:hover {
+    color: white;
+}
+
+.no-wrap {
+    white-space: nowrap;
+}
+
+.list-group.bg-dark > .list-group-item {
+    background-color: black; 
+    color: white;
+}

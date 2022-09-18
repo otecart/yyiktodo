@@ -1,4 +1,6 @@
 {% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% load todo_tags %}
 
 {% block title %}{{ todo }}{% endblock %}
 
@@ -6,31 +8,34 @@
     <h2>
         {{ todo }}
         {% if user == todo.owner %}
-            (<a href="{% url 'todo:todo-edit' todo.id %}">Edit</a>
-            |
-            <a href="{% url 'todo:todo-delete' todo.id %}">Delete</a>)
+            <a href="{% url 'todo:todo-edit' todo.id %}"><i class="bi bi-journal-text"></i></a>
+            <a href="{% url 'todo:todo-delete' todo.id %}"><i class="bi bi-journal-x"></i></a>
         {% endif %}
     </h2>
-    <ul>
+    <ul class="list-group bg-dark">
         {% for entry in todo.entries.all %}
-            <li>
+            <li class="list-group-item">
                 {% if entry.completed %}<strike>{{ entry }}</strike>{% else %}{{ entry }}{% endif %}
                 {% if user == todo.owner %}
-                    (<a href="{% url 'todo:entry-edit' entry.id %}">Edit</a>
-                    |
-                    <a href="{% url 'todo:entry-delete' entry.id %}">Delete</a>)
+                    <a href="{% url 'todo:entry-edit' entry.id %}"><i class="bi bi-journal-text"></i></a>
+                    <a href="{% url 'todo:entry-delete' entry.id %}"><i class="bi bi-journal-x"></i></a>
                 {% endif %}
             </li>
         {% endfor %}
     </ul>
+    <br>
     {% if user == todo.owner %}
-        <p>
-            <form method="POST" action="{% url 'todo:entry-create' todo.id %}">
-                {% csrf_token %}
-                {{ entry_form.as_table }}
-                <input type="submit" value="Add">
-            </form>
-        </p>
+        <form method="POST" action="{% url 'todo:entry-create' todo.id %}">
+            {% csrf_token %}
+            {% row %}
+                {% col %}
+                    {{ entry_form.text|as_crispy_field }}
+                {% endcol %}
+                {% col 'col-sm-2' %}
+                    <button class="btn btn-outline-yellow no-wrap" type="submit"><i class="bi bi-journal-plus"></i> Add</button>
+                {% endcol %}
+            {% endrow %}
+        </form>
     {% endif %}
-    <p><a href="{% url 'todo:todo-list' %}">Back</a></p>
+    <a href="{% url 'todo:todo-list' %}">Back</a>
 {% endblock %}

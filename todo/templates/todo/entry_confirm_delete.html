@@ -6,8 +6,11 @@
     <h3>Delete {{ entry }}?</h3>
     <form method="POST">
         {% csrf_token %}
-        {{ form.as_p }}
-        <input type="submit" value="Cancel" onclick="window.location='{% url 'todo:todo-detail' entry.todo.id %}'; return false;">
-        <input type="submit" value="Delete">
+        <button type="submit" class="btn btn-outline-yellow" value="Save">
+            <i class="bi bi-journal-x"></i> Delete
+        </button>
+        <button type="submit" class="btn btn-outline-yellow" onclick="window.location='{% url 'todo:todo-detail' entry.todo.id %}'; return false;">
+            <i class="bi bi-journals"></i> Back
+        </button>
     </form>
 {% endblock %}
