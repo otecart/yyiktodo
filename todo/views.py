@@ -1,19 +1,35 @@
-from django.contrib.auth import get_user_model
+from django.contrib.auth import get_user_model, login
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Q
 from django.http import HttpRequest
-from django.shortcuts import get_object_or_404, redirect, render
+from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse, reverse_lazy
-from django.views.generic import (CreateView, DeleteView, DetailView, FormView,
-                                  ListView, UpdateView)
+from django.views.generic import (
+    CreateView,
+    DeleteView,
+    DetailView,
+    FormView,
+    ListView,
+    UpdateView,
+)
 
 from .forms import EntryForm
-from .mixins import (AddOwnerMixin, OrFilteredMultipleMixin,
-                     OrFilteredSingleMixin)
+from .mixins import AddOwnerMixin, OrFilteredMultipleMixin, OrFilteredSingleMixin
 from .models import ToDo, ToDoEntry
 
 User = get_user_model()
+
+
+class RegisterView(FormView):
+    form_class = UserCreationForm
+    success_url = reverse_lazy("todo:todo-list")
+    template_name = "todo/register.html"
+
+    def form_valid(self, form):
+        user = form.save()  # type: ignore
+        login(self.request, user)
+        return redirect(self.success_url)  # type: ignore
 
 
 class ToDoListView(OrFilteredMultipleMixin, ListView):

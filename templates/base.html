@@ -31,6 +31,7 @@
                             <a class="nav-link" href="{% url 'logout' %}?next={{ request.path }}">Log Out</a>
                         {% else %}
                             <a class="nav-link" href="{% url 'login' %}?next={{ request.path }}">Log In</a>
+                            <a class="nav-link" href="{% url 'todo:register' %}?next={{ request.path }}">Register</a>
                         {% endif %}
                     </div>
                 </div>

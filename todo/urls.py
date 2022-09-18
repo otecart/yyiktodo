@@ -5,6 +5,7 @@ from .views import (
     EntryDeleteView,
     EntryEditView,
     MyToDoListView,
+    RegisterView,
     ToDoCreateView,
     ToDoDeleteView,
     ToDoDetailView,
@@ -27,5 +28,6 @@ urlpatterns = [
     ),
     path("entries/<int:pk>/edit/", EntryEditView.as_view(), name="entry-edit"),
     path("entries/<int:pk>/delete/", EntryDeleteView.as_view(), name="entry-delete"),
+    path("users/register/", RegisterView.as_view(), name="register"),
     path("users/<str:username>/", UserProfileView.as_view(), name="profile"),
 ]
