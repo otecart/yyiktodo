@@ -1,4 +1,5 @@
 from django.contrib.auth import get_user_model
+from django.core.validators import MinLengthValidator
 from django.db import models
 
 User = get_user_model()
@@ -17,7 +18,7 @@ class ToDo(models.Model):
 
 class ToDoEntry(models.Model):
     todo = models.ForeignKey(ToDo, on_delete=models.CASCADE, related_name="entries")
-    text = models.CharField(max_length=200)
+    text = models.CharField(max_length=200, validators=[MinLengthValidator(2)])
     completed = models.BooleanField(default=False)
 
     def save(self):

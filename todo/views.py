@@ -1,19 +1,16 @@
 from django.contrib.auth import get_user_model
+from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Q
-from django.shortcuts import get_object_or_404, redirect
+from django.http import HttpRequest
+from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse, reverse_lazy
-from django.views.generic import (
-    CreateView,
-    DeleteView,
-    DetailView,
-    ListView,
-    UpdateView,
-    View,
-)
+from django.views.generic import (CreateView, DeleteView, DetailView, FormView,
+                                  ListView, UpdateView)
 
 from .forms import EntryForm
-from .mixins import AddOwnerMixin, OrFilteredMultipleMixin, OrFilteredSingleMixin
+from .mixins import (AddOwnerMixin, OrFilteredMultipleMixin,
+                     OrFilteredSingleMixin)
 from .models import ToDo, ToDoEntry
 
 User = get_user_model()
@@ -64,7 +61,6 @@ class UserProfileView(DetailView):
 
 class ToDoDetailView(OrFilteredSingleMixin, DetailView):
     model = ToDo
-    extra_context = {"entry_form": EntryForm()}
 
     def get_filters(self):
         filters = [Q(public=True)]
@@ -74,6 +70,15 @@ class ToDoDetailView(OrFilteredSingleMixin, DetailView):
 
     def get_queryset(self):
         return super().get_queryset().select_related("owner")
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        if "entry_form" in self.request.session:
+            form = EntryForm(self.request.session.pop("entry_form"))
+            context["entry_form"] = form
+        else:
+            context["entry_form"] = EntryForm()
+        return context
 
 
 class ToDoCreateView(AddOwnerMixin, CreateView):
@@ -101,11 +106,18 @@ class ToDoDeleteView(LoginRequiredMixin, OrFilteredSingleMixin, DeleteView):
         return [Q(owner=self.request.user)]
 
 
-class EntryCreateView(LoginRequiredMixin, View):
-    def post(self, request, pk: int):
-        todo = get_object_or_404(ToDo, pk=pk, owner=self.request.user)
-        entry = ToDoEntry(todo=todo, text=request.POST["text"])
-        entry.save()
+class EntryCreateView(LoginRequiredMixin, FormView):
+    form_class = EntryForm
+
+    def post(self, request: HttpRequest, pk: int):
+        todo = get_object_or_404(ToDo, pk=pk, owner=request.user)
+        form: EntryForm = self.get_form()  # type: ignore
+        if form.is_valid():
+            entry: ToDoEntry = form.save(commit=False)
+            entry.todo = todo
+            entry.save()
+        else:
+            request.session["entry_form"] = form.data
         return redirect(reverse("todo:todo-detail", args=(todo.pk,)))
 
 
