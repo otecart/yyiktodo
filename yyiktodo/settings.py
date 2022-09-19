@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     "crispy_bootstrap5",
     # my apps
     "todo",
+    "yyik_auth",
 ]
 
 MIDDLEWARE = [
@@ -137,3 +138,5 @@ INTERNAL_IPS = ["127.0.0.1"]
 
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
 CRISPY_TEMPLATE_PACK = "bootstrap5"
+
+LOGIN_URL = "/auth/login"
