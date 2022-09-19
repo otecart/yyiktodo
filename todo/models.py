@@ -16,18 +16,18 @@ class ToDo(models.Model):
         return self.title
 
 
-class ToDoEntry(models.Model):
+class Entry(models.Model):
     todo = models.ForeignKey(ToDo, on_delete=models.CASCADE, related_name="entries")
     text = models.CharField(max_length=200, validators=[MinLengthValidator(2)])
     completed = models.BooleanField(default=False)
 
-    def save(self):
+    def save(self, *args, **kwargs):
         self.todo.save()
-        return super().save()
+        return super().save(*args, **kwargs)
 
-    def delete(self):
+    def delete(self, *args, **kwargs):
         self.todo.save()
-        return super().delete()
+        return super().delete(*args, **kwargs)
 
     def __str__(self) -> str:
         return self.text

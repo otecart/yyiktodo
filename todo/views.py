@@ -1,5 +1,4 @@
-from django.contrib.auth import get_user_model, login
-from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Q
 from django.http import HttpRequest
@@ -16,20 +15,9 @@ from django.views.generic import (
 
 from .forms import EntryForm
 from .mixins import AddOwnerMixin, OrFilteredMultipleMixin, OrFilteredSingleMixin
-from .models import ToDo, ToDoEntry
+from .models import Entry, ToDo
 
 User = get_user_model()
-
-
-class RegisterView(FormView):
-    form_class = UserCreationForm
-    success_url = reverse_lazy("todo:todo-list")
-    template_name = "todo/register.html"
-
-    def form_valid(self, form):
-        user = form.save()  # type: ignore
-        login(self.request, user)
-        return redirect(self.success_url)  # type: ignore
 
 
 class ToDoListView(OrFilteredMultipleMixin, ListView):
@@ -102,6 +90,9 @@ class ToDoCreateView(AddOwnerMixin, CreateView):
     fields = ["title", "public"]
     success_url = reverse_lazy("todo:todo-list")
 
+    def get_success_url(self) -> str:
+        return reverse("todo:todo-detail", args=(self.object.pk,))  # type: ignore
+
 
 class ToDoEditView(LoginRequiredMixin, OrFilteredSingleMixin, UpdateView):
     model = ToDo
@@ -129,7 +120,7 @@ class EntryCreateView(LoginRequiredMixin, FormView):
         todo = get_object_or_404(ToDo, pk=pk, owner=request.user)
         form: EntryForm = self.get_form()  # type: ignore
         if form.is_valid():
-            entry: ToDoEntry = form.save(commit=False)
+            entry: Entry = form.save(commit=False)
             entry.todo = todo
             entry.save()
         else:
@@ -138,7 +129,7 @@ class EntryCreateView(LoginRequiredMixin, FormView):
 
 
 class EntryEditView(LoginRequiredMixin, OrFilteredSingleMixin, UpdateView):
-    model = ToDoEntry
+    model = Entry
     fields = ["text", "completed"]
     template_name = "todo/entry_form.html"
     context_object_name = "entry"
@@ -151,7 +142,7 @@ class EntryEditView(LoginRequiredMixin, OrFilteredSingleMixin, UpdateView):
 
 
 class EntryDeleteView(LoginRequiredMixin, OrFilteredSingleMixin, DeleteView):
-    model = ToDoEntry
+    model = Entry
     template_name = "todo/entry_confirm_delete.html"
     context_object_name = "entry"
 

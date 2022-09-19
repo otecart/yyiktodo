@@ -1,6 +1,6 @@
 from django import forms
 
-from .models import ToDoEntry
+from .models import Entry
 
 
 class EntryForm(forms.ModelForm):
@@ -11,5 +11,5 @@ class EntryForm(forms.ModelForm):
     )
 
     class Meta:
-        model = ToDoEntry
+        model = Entry
         fields = ["text"]
