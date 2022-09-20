@@ -116,6 +116,9 @@ class ToDoDeleteView(LoginRequiredMixin, OrFilteredSingleMixin, DeleteView):
 class EntryCreateView(LoginRequiredMixin, FormView):
     form_class = EntryForm
 
+    def get(self, request, pk: int):
+        return redirect(reverse("todo:todo-detail", args=(pk,)))
+
     def post(self, request: HttpRequest, pk: int):
         todo = get_object_or_404(ToDo, pk=pk, owner=request.user)
         form: EntryForm = self.get_form()  # type: ignore
@@ -125,7 +128,7 @@ class EntryCreateView(LoginRequiredMixin, FormView):
             entry.save()
         else:
             request.session["entry_form"] = form.data
-        return redirect(reverse("todo:todo-detail", args=(todo.pk,)))
+        return redirect(reverse("todo:todo-detail", args=(pk,)))
 
 
 class EntryEditView(LoginRequiredMixin, OrFilteredSingleMixin, UpdateView):
